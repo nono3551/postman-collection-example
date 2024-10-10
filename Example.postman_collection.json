@@ -1,0 +1,253 @@
+{
+	"info": {
+		"_postman_id": "f88536d3-198d-457a-881b-d11551d8e637",
+		"name": "Example",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38089129"
+	},
+	"item": [
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"{{login}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "v1/accounts/tokens",
+							"host": [
+								"v1"
+							],
+							"path": [
+								"accounts",
+								"tokens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Current",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-ApiKey",
+								"value": "asdasd",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "v1/accounts/me",
+							"host": [
+								"v1"
+							],
+							"path": [
+								"accounts",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Devices",
+			"item": [
+				{
+					"name": "Get All Devices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "v1/devices",
+							"host": [
+								"v1"
+							],
+							"path": [
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Craete New Device",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"samsung\",\r\n    \"description\": \"samsung\",\r\n    \"organisationId\": \"6d4b7845-7a5c-4bf7-a6f4-ada7fa334733\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "v1/devices",
+							"host": [
+								"v1"
+							],
+							"path": [
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Device",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"1234\",\r\n    \"description\": \"asdaf\",\r\n    \"organisationId\": \"6d4b7845-7a5c-4bf7-a6f4-ada7fa334733\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "v1/devices/357d824d-0822-4765-92f6-2b891296cb83",
+							"host": [
+								"v1"
+							],
+							"path": [
+								"devices",
+								"357d824d-0822-4765-92f6-2b891296cb83"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Device",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "v1/devices/357d824d-0822-4765-92f6-2b891296cb83",
+							"host": [
+								"v1"
+							],
+							"path": [
+								"devices",
+								"357d824d-0822-4765-92f6-2b891296cb83"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{bearer_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"// This is example pre-request script that you can get inspiration from\r",
+					"// Variables marked with '{{}}' are loaded from evnironment variables\r",
+					"\r",
+					"// Add any custom headers\r",
+					"pm.request.headers.add({key: \"X-ApiKey\", value: pm.environment.get('api_key')});\r",
+					"\r",
+					"// Appends rest of URL since Postman requests contain path only\r",
+					"pm.request.url = `{{api_url}}/${pm.request.url}`\r",
+					"\r",
+					"// Include signature logic if necessary \r",
+					"var CryptoJS = require(\"crypto-js\");\r",
+					"var url = pm.request.url.replace('{{api_url}}', '');\r",
+					"var n = url.indexOf('?');\r",
+					"url = url.substring(0, n != -1 ? n : url.length);\r",
+					"var payload = pm.environment.replaceIn(pm.request.body !== undefined ? pm.request.body.raw : \"\");\r",
+					"var message = [payload, url].join(':');\r",
+					"var signature = CryptoJS.HmacSHA256(message, pm.environment.get('api_secret')).toString();\r",
+					"\r",
+					"// If we are testing/using Login endpoint we do not have to perform login before it\r",
+					"if (pm.info.requestName == \"Login\") {\r",
+					"    return;\r",
+					"} else {\r",
+					"    pm.request.headers.add({key: \"X-Organisation\", value: pm.environment.get('X-Organisation')});\r",
+					"}\r",
+					"\r",
+					"// This perform login before every request\r",
+					"pm.sendRequest({\r",
+					"    url: pm.environment.get('api_url') + \"/v1/accounts/tokens\",\r",
+					"    method: 'POST',\r",
+					"    header: {\r",
+					"        'Content-Type': 'application/json',\r",
+					"        'X-ApiKey': pm.environment.get('api_key')\r",
+					"    },\r",
+					"    body: {\r",
+					"        mode: 'raw',\r",
+					"        raw: JSON.stringify({\r",
+					"            login: pm.environment.get('login'),\r",
+					"            password: pm.environment.get('password'),\r",
+					"        })\r",
+					"    }\r",
+					"}, function (err, res) {\r",
+					"    if (err) {\r",
+					"        console.log(err);\r",
+					"        console.log(err);\r",
+					"    } else {\r",
+					"        console.log(res.json()); // Log the response JSON to the console\r",
+					"        // You can also set environment or global variables with the response data\r",
+					"        pm.environment.set(\"bearer_token\", res.json()[\"result\"][\"token\"]);\r",
+					"    }\r",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
