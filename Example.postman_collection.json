@@ -11,6 +11,31 @@
 			"item": [
 				{
 					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// You can use this for manual login\r",
+									"// Call is stores token to environment variable\r",
+									"// Remove this line if you want to use automatic login\r",
+									"pm.environment.set(\"bearer_token\", pm.response.json()[\"result\"][\"token\"]);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -211,7 +236,8 @@
 					"    pm.request.headers.add({key: \"X-Organisation\", value: pm.environment.get('X-Organisation')});\r",
 					"}\r",
 					"\r",
-					"// This perform login before every request\r",
+					"// This performs login before every request\r",
+					"// You can remove this and use Login request for manual login\r",
 					"pm.sendRequest({\r",
 					"    url: pm.environment.get('api_url') + \"/v1/accounts/tokens\",\r",
 					"    method: 'POST',\r",
